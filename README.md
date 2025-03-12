@@ -66,10 +66,9 @@
   <a href="#如何自行构建">自行构建</a> •
   <a href="#Docker-镜像">Docker</a> •
   <a href="#基于-S6-overlay-的镜像">S6-overlay</a> •
-  <a href="#如何创建密钥">密钥</a> •
+  <a href="#如何生成密钥对">密钥</a> •
   <a href="#deb-套件">Debian</a> •
-  <a href="#ENV-环境参数">环境参数</a><br>
-  [<a href="README-EN.md">English</a>] | [<a href="README-DE.md">Deutsch</a>] | [<a href="README-NL.md">Nederlands</a>] | [<a href="README-TW.md">繁体中文</a>]<br>
+  <a href="#ENV-环境变量">环境参数</a><br>
 </p>
 
 # RustDesk Server Program
@@ -90,13 +89,13 @@ cargo build --release
 
 执行后会在target/release目录下生成三个对应平台的可执行程序
 
-- hbbs - RustDesk ID/会和服务器
+- hbbs - RustDesk ID/会面服务器
 - hbbr - RustDesk 中继服务器
 - rustdesk-utils - RustDesk 命令行工具
 
 您可以在 [releases](https://github.com/lejianwen/rustdesk-server/releases) 页面中找到最新的服务端软件。
 
-如果您需要额外的功能支持，[RustDesk 专业版服务器](https://rustdesk.com/pricing.html) 获取更适合您。
+如果您需要额外功能，[RustDesk Server Pro](https://rustdesk.com/pricing.html) 可能更适合您。
 
 如果您想开发自己的服务器，[rustdesk-server-demo](https://github.com/rustdesk/rustdesk-server-demo) 应该会比直接使用这个仓库更简单快捷。
 
@@ -253,8 +252,8 @@ services:
 
 | 环境变量           | 是否可选 | 描述                       |
 |----------------|------|--------------------------|
-| RELAY          | 否    | 运行此容器的宿主机的 IP 地址/ DNS 名称 |
-| ENCRYPTED_ONLY | 是    | 如果设置为 **"1"**，将不接受未加密的连接。 |
+| RELAY | 否 | 运行此容器的机器的 IP 地址/DNS 名称 |
+| ENCRYPTED_ONLY | 是 | 如果设置为 **"1"**，则不允许未加密连接 |
 | KEY_PUB        | 是    | 密钥对中的公钥（Public Key）      |
 | KEY_PRIV       | 是    | 密钥对中的私钥（Private Key）     |
 
@@ -268,7 +267,7 @@ services:
 
 #### 使用 ENV 存储密钥对
 
-您可以使用 Docker 环境变量來存储密钥。如下：
+您可以使用 Docker 环境变量来存储密钥。如下：
 
 ```bash
 docker run --name rustdesk-server \ 
@@ -307,9 +306,9 @@ services:
     restart: unless-stopped
 ```
 
-#### 使用 Docker Secret 來保存密钥对
+#### 使用 Docker Secret 来保存密钥对
 
-您还可以使用 Docker Secret 來保存密钥。
+您还可以使用 Docker Secret 来保存密钥。
 如果您使用 **docker-compose** 或 **docker swarm**，推荐您使用。
 只需按照以下示例操作：
 
@@ -407,7 +406,8 @@ Secret Key:  egAVd44u33ZEUIDTtksGcHeVeAwywarEdHmf99KM5ajwEsuG3NQFT9coAfiZ6nen4hf
 | KEY                   | hbbs/hbbr     | 如果设置了此参数，将强制使用指定密钥对，如果设为 **"_"**，则强制使用任意密钥       |
 | LIMIT_SPEED           | hbbr          | 速度限制（以Mb/s为单位）                                   |
 | PORT                  | hbbs/hbbr     | 监听端口（hbbs为21116，hbbr为21117）                      |
-| RELAY_SERVERS         | hbbs          | 运行hbbr的机器的IP地址/DNS名称（用逗号分隔）                      |
+| RELAY_SERVERS | hbbs | 运行中继 hbbr 的机器的 IP地址或者，用逗号分隔可以指定多个 |
+| RENDZVOUS_SERVERS | hbbs | 运行会面 hbbs 的机器的 IP地址或者，用逗号分隔可以指定多个 |
 | RUST_LOG              | all           | 设置 debug level (error\|warn\|info\|debug\|trace) |
 | SINGLE_BANDWIDTH      | hbbr          | 单个连接的最大带宽（以Mb/s为单位）                              |
 | TOTAL_BANDWIDTH       | hbbr          | 最大总带宽（以Mb/s为单位）                                  |
